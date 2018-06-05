@@ -10,7 +10,13 @@ import Logica.favaluos;
 import com.toedter.calendar.JDateChooser;
 import java.awt.event.ActionEvent;
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -227,6 +233,7 @@ public class frmavaluos extends javax.swing.JFrame {
         buttonGroup1 = new javax.swing.ButtonGroup();
         buttonGroup2 = new javax.swing.ButtonGroup();
         buttonGroup3 = new javax.swing.ButtonGroup();
+        jLabel13 = new javax.swing.JLabel();
         panelbusqueda = new javax.swing.JPanel();
         cbofamilia = new javax.swing.JComboBox<>();
         cbocategoria = new javax.swing.JComboBox<>();
@@ -257,10 +264,14 @@ public class frmavaluos extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         chbomarca = new javax.swing.JCheckBox();
         txtmarca = new javax.swing.JTextField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tablaavaluos = new javax.swing.JTable();
         chboconsulta = new javax.swing.JCheckBox();
         chboingreso = new javax.swing.JCheckBox();
+        jPanel1 = new javax.swing.JPanel();
+        txtfecha = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        txtfechatabla = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaavaluos = new javax.swing.JTable();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -274,6 +285,8 @@ public class frmavaluos extends javax.swing.JFrame {
             }
         ));
         jScrollPane1.setViewportView(jTable1);
+
+        jLabel13.setText("jLabel13");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -390,6 +403,8 @@ public class frmavaluos extends javax.swing.JFrame {
             }
         });
 
+        dcfecha.setDateFormatString("dd/MM/yyyy");
+
         txtdescripcion1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtdescripcion1ActionPerformed(evt);
@@ -480,7 +495,7 @@ public class frmavaluos extends javax.swing.JFrame {
                 .addComponent(chbomarca)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtmarca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelingresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9)
                     .addComponent(txtmodelo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -497,21 +512,9 @@ public class frmavaluos extends javax.swing.JFrame {
                     .addComponent(jLabel10)
                     .addComponent(txtdescripcion1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9)
-                .addComponent(bntingresar))
+                .addComponent(bntingresar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        tablaavaluos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane2.setViewportView(tablaavaluos);
 
         chboconsulta.setText("Consulta");
         chboconsulta.addActionListener(new java.awt.event.ActionListener() {
@@ -526,6 +529,68 @@ public class frmavaluos extends javax.swing.JFrame {
                 chboingresoActionPerformed(evt);
             }
         });
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Calculo del avaluo", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+
+        txtfecha.setText("jLabel14");
+
+        jButton2.setText("jButton2");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        txtfechatabla.setText("jLabel14");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(txtfecha))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(58, 58, 58)
+                        .addComponent(jButton2))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(txtfechatabla)))
+                .addContainerGap(58, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(txtfecha)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtfechatabla)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addComponent(jButton2))
+        );
+
+        tablaavaluos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tablaavaluos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaavaluosMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tablaavaluosMousePressed(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tablaavaluos);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -545,6 +610,8 @@ public class frmavaluos extends javax.swing.JFrame {
                             .addComponent(chboconsulta)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 608, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -557,21 +624,20 @@ public class frmavaluos extends javax.swing.JFrame {
                 .addComponent(chboconsulta)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelingreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(panelbusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                    .addComponent(panelbusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panelingreso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(45, 45, 45))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txtpalabraclaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtpalabraclaveActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtpalabraclaveActionPerformed
 
     private void cbofamiliaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbofamiliaItemStateChanged
         // TODO add your handling code here:
@@ -759,6 +825,32 @@ public class frmavaluos extends javax.swing.JFrame {
         consultar(familia,categoria,marca);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void txtpalabraclaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtpalabraclaveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtpalabraclaveActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        Calendar c = new GregorianCalendar();
+        java.util.Date fecha = c.getTime();
+        txtfecha.setText(fecha.toString());
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void tablaavaluosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaavaluosMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_tablaavaluosMouseClicked
+
+    private void tablaavaluosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaavaluosMousePressed
+        // TODO add your handling code here:
+        if(evt.getClickCount()==2){
+            int fila = tablaavaluos.getSelectedRow();
+            String fecha;
+            fecha=tablaavaluos.getValueAt(fila, 5).toString();
+            txtfechatabla.setText(fecha);
+        }
+    }//GEN-LAST:event_tablaavaluosMousePressed
+
     /**
      * @param args the command line arguments
      */
@@ -810,10 +902,12 @@ public class frmavaluos extends javax.swing.JFrame {
     private javax.swing.JCheckBox chbomarca;
     private com.toedter.calendar.JDateChooser dcfecha;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -822,6 +916,7 @@ public class frmavaluos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
@@ -829,6 +924,8 @@ public class frmavaluos extends javax.swing.JFrame {
     private javax.swing.JPanel panelingreso;
     private javax.swing.JTable tablaavaluos;
     private javax.swing.JTextField txtdescripcion1;
+    private javax.swing.JLabel txtfecha;
+    private javax.swing.JLabel txtfechatabla;
     private javax.swing.JTextField txtmarca;
     private javax.swing.JTextField txtmodelo;
     private javax.swing.JTextField txtmodelo1;
