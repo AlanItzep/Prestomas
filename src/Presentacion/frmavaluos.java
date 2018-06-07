@@ -13,8 +13,13 @@ import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -37,8 +42,12 @@ public class frmavaluos extends javax.swing.JFrame {
         mostrar("");
     }
     
+    public String fechaingreso;
+    public String precioingreso;
     public Integer ping;
     public Integer Pin;
+    public LocalDate ldt = LocalDate.now();
+    public LocalDate ldt2;
     //2=ingreso 1=consulta
     
     void ocultar_columnas(){
@@ -66,6 +75,7 @@ public class frmavaluos extends javax.swing.JFrame {
         panelbusqueda.setVisible(false);
         panelingreso.setVisible(true);
         txtmarca.setVisible(false);
+        panelcalculo.setVisible(false);
     }
     
     void buscar(){
@@ -75,6 +85,15 @@ public class frmavaluos extends javax.swing.JFrame {
         chboingreso.setSelected(false);
         panelingreso.setVisible(false);
         panelbusqueda.setVisible(true);
+        panelcalculo.setVisible(true);
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US);
+        String formatear = formato.format(ldt);
+        txtfecha.setText(formatear);
+        txtfechatabla.setText("");
+        txtprecioingreso.setText("");
+        txtresultado.setText("");
+        txtporcentaje.setText("");
+        txtvalor.setText("");
     }
     
     void consultar(String familia,String categoria, String marca){
@@ -147,7 +166,6 @@ public class frmavaluos extends javax.swing.JFrame {
             cbocategoria1.setModel(dm);
         }
     }
-    
     void eleccion3(){
         String [] articulosindustriales = {
             "Ingleteadora", 
@@ -169,7 +187,6 @@ public class frmavaluos extends javax.swing.JFrame {
             cbocategoria1.setModel(dm);
         }
     }
-    
     void eleccion4(){
         String [] vehiculos = {
             "Automovil", 
@@ -185,7 +202,6 @@ public class frmavaluos extends javax.swing.JFrame {
             cbocategoria1.setModel(dm);
         }
     }
-    
     void eleccion5(){
         String [] motocicletas = {
             "Motocicletas", 
@@ -200,7 +216,6 @@ public class frmavaluos extends javax.swing.JFrame {
             cbocategoria1.setModel(dm);
         }
     }
-    
     void eleccion6(){
         String [] instrumentosmusicales = {
             "Guitarras", 
@@ -216,8 +231,6 @@ public class frmavaluos extends javax.swing.JFrame {
             cbocategoria1.setModel(dm);
         }
     }
-
-    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -238,14 +251,10 @@ public class frmavaluos extends javax.swing.JFrame {
         cbofamilia = new javax.swing.JComboBox<>();
         cbocategoria = new javax.swing.JComboBox<>();
         cbomarca = new javax.swing.JComboBox<>();
-        txtmodelo = new javax.swing.JTextField();
-        txtpalabraclave = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         panelingreso = new javax.swing.JPanel();
         cbofamilia1 = new javax.swing.JComboBox<>();
         cbocategoria1 = new javax.swing.JComboBox<>();
@@ -266,10 +275,20 @@ public class frmavaluos extends javax.swing.JFrame {
         txtmarca = new javax.swing.JTextField();
         chboconsulta = new javax.swing.JCheckBox();
         chboingreso = new javax.swing.JCheckBox();
-        jPanel1 = new javax.swing.JPanel();
+        panelcalculo = new javax.swing.JPanel();
         txtfecha = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         txtfechatabla = new javax.swing.JLabel();
+        txtresultado = new javax.swing.JLabel();
+        txtporcentaje = new javax.swing.JLabel();
+        txtprecioingreso = new javax.swing.JLabel();
+        txtfecha1 = new javax.swing.JLabel();
+        txtfechatabla1 = new javax.swing.JLabel();
+        txtresultado1 = new javax.swing.JLabel();
+        txtporcentaje1 = new javax.swing.JLabel();
+        txtfechatabla2 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txtvalor = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaavaluos = new javax.swing.JTable();
 
@@ -310,12 +329,6 @@ public class frmavaluos extends javax.swing.JFrame {
             }
         });
 
-        txtpalabraclave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtpalabraclaveActionPerformed(evt);
-            }
-        });
-
         jButton1.setText("Consultar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -329,10 +342,6 @@ public class frmavaluos extends javax.swing.JFrame {
 
         jLabel3.setText("Marca");
 
-        jLabel4.setText("Modelo");
-
-        jLabel5.setText("Palabra clave");
-
         javax.swing.GroupLayout panelbusquedaLayout = new javax.swing.GroupLayout(panelbusqueda);
         panelbusqueda.setLayout(panelbusquedaLayout);
         panelbusquedaLayout.setHorizontalGroup(
@@ -344,20 +353,16 @@ public class frmavaluos extends javax.swing.JFrame {
                         .addGroup(panelbusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addGap(22, 22, 22)
+                            .addComponent(jLabel3))
+                        .addGap(39, 39, 39)
                         .addGroup(panelbusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtmodelo)
-                            .addComponent(txtpalabraclave)
                             .addComponent(cbofamilia, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cbocategoria, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cbomarca, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(panelbusquedaLayout.createSequentialGroup()
                         .addGap(94, 94, 94)
                         .addComponent(jButton1)))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelbusquedaLayout.setVerticalGroup(
             panelbusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -375,14 +380,6 @@ public class frmavaluos extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(cbomarca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelbusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(txtmodelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(13, 13, 13)
-                .addGroup(panelbusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(txtpalabraclave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
                 .addComponent(jButton1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -530,11 +527,11 @@ public class frmavaluos extends javax.swing.JFrame {
             }
         });
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Calculo del avaluo", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+        panelcalculo.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Calculo del avaluo", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
 
         txtfecha.setText("jLabel14");
 
-        jButton2.setText("jButton2");
+        jButton2.setText("Calcular");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -543,31 +540,92 @@ public class frmavaluos extends javax.swing.JFrame {
 
         txtfechatabla.setText("jLabel14");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(txtfecha))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(58, 58, 58)
-                        .addComponent(jButton2))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(txtfechatabla)))
-                .addContainerGap(58, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        txtresultado.setText("jLabel14");
+
+        txtporcentaje.setText("jLabel14");
+
+        txtprecioingreso.setText("jLabel14");
+
+        txtfecha1.setText("Fecha actual");
+
+        txtfechatabla1.setText("Fecha de producto");
+
+        txtresultado1.setText("Antiguedad");
+
+        txtporcentaje1.setText("Depreciacion");
+
+        txtfechatabla2.setText("Precio de producto");
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel4.setText("Valor actual");
+
+        txtvalor.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
+        txtvalor.setText("jLabel5");
+
+        javax.swing.GroupLayout panelcalculoLayout = new javax.swing.GroupLayout(panelcalculo);
+        panelcalculo.setLayout(panelcalculoLayout);
+        panelcalculoLayout.setHorizontalGroup(
+            panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelcalculoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(txtfecha)
+                .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelcalculoLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addGap(76, 76, 76))
+                    .addGroup(panelcalculoLayout.createSequentialGroup()
+                        .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelcalculoLayout.createSequentialGroup()
+                                .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtfechatabla2)
+                                    .addComponent(txtresultado1)
+                                    .addComponent(txtporcentaje1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtprecioingreso)
+                                    .addGroup(panelcalculoLayout.createSequentialGroup()
+                                        .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtporcentaje)
+                                            .addComponent(txtresultado))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtvalor)
+                                            .addComponent(jLabel4)))))
+                            .addGroup(panelcalculoLayout.createSequentialGroup()
+                                .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtfechatabla1)
+                                    .addComponent(txtfecha1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtfecha)
+                                    .addComponent(txtfechatabla))))
+                        .addContainerGap(11, Short.MAX_VALUE))))
+        );
+        panelcalculoLayout.setVerticalGroup(
+            panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelcalculoLayout.createSequentialGroup()
+                .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtfecha1)
+                    .addComponent(txtfecha))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtfechatabla)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtfechatabla)
+                    .addComponent(txtfechatabla1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtfechatabla2)
+                    .addComponent(txtprecioingreso, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtresultado1)
+                    .addComponent(txtresultado)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelcalculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtporcentaje1)
+                    .addComponent(txtporcentaje)
+                    .addComponent(txtvalor))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton2))
         );
 
@@ -600,7 +658,9 @@ public class frmavaluos extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(panelbusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(panelcalculo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelbusqueda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(panelingreso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -610,8 +670,6 @@ public class frmavaluos extends javax.swing.JFrame {
                             .addComponent(chboconsulta)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 608, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -622,55 +680,20 @@ public class frmavaluos extends javax.swing.JFrame {
                 .addComponent(chboingreso)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(chboconsulta)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelbusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelbusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panelcalculo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(panelingreso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(45, 45, 45))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void cbofamiliaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbofamiliaItemStateChanged
-        // TODO add your handling code here:
-        //consulta
-        //Pin = 1;
-        String estado;
-        int seleccionado = cbofamilia.getSelectedIndex();
-        estado = (String) cbofamilia.getItemAt(seleccionado);
-        if(estado.equals("Electronicos")){
-            ping = 1;
-            eleccion1();
-        }
-        if(estado.equals("Linea Blanca")){
-            ping = 2;
-            eleccion2();
-        }
-        if(estado.equals("Articulos Industriales")){
-            ping = 3;
-            eleccion3();
-        }
-        if(estado.equals("Vehiculos")){
-            ping = 4;
-            eleccion4();
-        }
-        if(estado.equals("Motocicletas")){
-            ping = 5;
-            eleccion5();
-        }
-        if(estado.equals("Instrumentos Musicales")){
-            ping = 6;
-            eleccion6();
-        }        
-    }//GEN-LAST:event_cbofamiliaItemStateChanged
 
     private void txtdescripcion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtdescripcion1ActionPerformed
         // TODO add your handling code here:
@@ -774,11 +797,6 @@ public class frmavaluos extends javax.swing.JFrame {
         ingresar();
     }//GEN-LAST:event_chboingresoActionPerformed
 
-    private void cbofamiliaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbofamiliaKeyPressed
-        // TODO add your handling code here:
-       
-    }//GEN-LAST:event_cbofamiliaKeyPressed
-
     private void cbofamilia1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbofamilia1KeyPressed
         // TODO add your handling code here:
         
@@ -806,34 +824,16 @@ public class frmavaluos extends javax.swing.JFrame {
         
     }//GEN-LAST:event_chbomarcaItemStateChanged
 
-    private void cbomarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbomarcaActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_cbomarcaActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        int family = cbofamilia.getSelectedIndex();
-        String familia = ((String) cbofamilia.getItemAt(family));
-        
-        int category = cbocategoria.getSelectedIndex();
-        String categoria = ((String) cbocategoria.getItemAt(category));
-        
-        int brand = cbomarca.getSelectedIndex();
-        String marca = ((String) cbomarca.getItemAt(brand));
-        
-        consultar(familia,categoria,marca);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void txtpalabraclaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtpalabraclaveActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtpalabraclaveActionPerformed
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        Calendar c = new GregorianCalendar();
-        java.util.Date fecha = c.getTime();
-        txtfecha.setText(fecha.toString());
+        // TODO add your handling code here:        
+        Period periodo = Period.between(ldt2, ldt); 
+        String espacio =String.format("%s/%s/%s", periodo.getYears(), periodo.getMonths(), periodo.getDays());
+        Double pidecimal = Double.parseDouble(precioingreso);
+        Double porcentaje = (0.01*pidecimal)* periodo.getYears();
+        Double valor = pidecimal - porcentaje;
+        txtresultado.setText(espacio);
+        txtporcentaje.setText("Q."+(String.format("%.2f", porcentaje)).toString());
+        txtvalor.setText("Q."+(String.format("%.2f", valor)).toString());
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void tablaavaluosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaavaluosMouseClicked
@@ -845,11 +845,72 @@ public class frmavaluos extends javax.swing.JFrame {
         // TODO add your handling code here:
         if(evt.getClickCount()==2){
             int fila = tablaavaluos.getSelectedRow();
-            String fecha;
-            fecha=tablaavaluos.getValueAt(fila, 5).toString();
-            txtfechatabla.setText(fecha);
+            
+            fechaingreso=tablaavaluos.getValueAt(fila, 5).toString();
+            precioingreso = tablaavaluos.getValueAt(fila,6).toString();
+            txtfechatabla.setText(fechaingreso);
+            txtprecioingreso.setText(precioingreso);
+            DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US);
+            ldt2 = LocalDate.parse(fechaingreso,formato);
         }
     }//GEN-LAST:event_tablaavaluosMousePressed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        int family = cbofamilia.getSelectedIndex();
+        String familia = ((String) cbofamilia.getItemAt(family));
+
+        int category = cbocategoria.getSelectedIndex();
+        String categoria = ((String) cbocategoria.getItemAt(category));
+
+        int brand = cbomarca.getSelectedIndex();
+        String marca = ((String) cbomarca.getItemAt(brand));
+
+        consultar(familia,categoria,marca);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void cbomarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbomarcaActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_cbomarcaActionPerformed
+
+    private void cbofamiliaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbofamiliaKeyPressed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_cbofamiliaKeyPressed
+
+    private void cbofamiliaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbofamiliaItemStateChanged
+        // TODO add your handling code here:
+        //consulta
+        //Pin = 1;
+        String estado;
+        int seleccionado = cbofamilia.getSelectedIndex();
+        estado = (String) cbofamilia.getItemAt(seleccionado);
+        if(estado.equals("Electronicos")){
+            ping = 1;
+            eleccion1();
+        }
+        if(estado.equals("Linea Blanca")){
+            ping = 2;
+            eleccion2();
+        }
+        if(estado.equals("Articulos Industriales")){
+            ping = 3;
+            eleccion3();
+        }
+        if(estado.equals("Vehiculos")){
+            ping = 4;
+            eleccion4();
+        }
+        if(estado.equals("Motocicletas")){
+            ping = 5;
+            eleccion5();
+        }
+        if(estado.equals("Instrumentos Musicales")){
+            ping = 6;
+            eleccion6();
+        }
+    }//GEN-LAST:event_cbofamiliaItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -911,25 +972,31 @@ public class frmavaluos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JPanel panelbusqueda;
+    private javax.swing.JPanel panelcalculo;
     private javax.swing.JPanel panelingreso;
     private javax.swing.JTable tablaavaluos;
     private javax.swing.JTextField txtdescripcion1;
     private javax.swing.JLabel txtfecha;
+    private javax.swing.JLabel txtfecha1;
     private javax.swing.JLabel txtfechatabla;
+    private javax.swing.JLabel txtfechatabla1;
+    private javax.swing.JLabel txtfechatabla2;
     private javax.swing.JTextField txtmarca;
-    private javax.swing.JTextField txtmodelo;
     private javax.swing.JTextField txtmodelo1;
-    private javax.swing.JTextField txtpalabraclave;
+    private javax.swing.JLabel txtporcentaje;
+    private javax.swing.JLabel txtporcentaje1;
     private javax.swing.JTextField txtprecio;
+    private javax.swing.JLabel txtprecioingreso;
+    private javax.swing.JLabel txtresultado;
+    private javax.swing.JLabel txtresultado1;
+    private javax.swing.JLabel txtvalor;
     // End of variables declaration//GEN-END:variables
 }
